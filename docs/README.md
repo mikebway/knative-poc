@@ -74,6 +74,50 @@ NAME               READY   UP-TO-DATE   AVAILABLE   AGE
 knative-operator   1/1     1            1           2m22s
 operator-webhook   1/1     1            1           2m22s
 ```
+Should you wish to revert to naked Minikube, sans Knative Serving, exectute the following after reverting all later
+steps:
+
+```shell
+kubectl delete -f https://github.com/knative/operator/releases/download/knative-v1.15.4/operator.yaml
+```
+
+**Be warned:** this can take several minutes to complete; be patient.
 
 ### Install Knative Serving
+
+Establish the `knative-serving` namespace and `knative-service` resource type:
+
+```shell
+kubectl apply -f namespace-kind.yaml
+```
+
+If yoou started with the Minikube configuration described by the [Running Istio on Minikube locally](https://github.com/mikebway/k8s-istio-poc)
+project then the external IP address of your Istio ingress gateway will be 127.0.0.1. If you followed some other path
+to set up your local Kubernetes test cluster with Istio, runn the following and record the **EXTERNAL-IP** address
+value that is displayed:
+
+```shell
+kubectl get svc istio-ingressgateway -n istio-system
+```
+
+### Verify the Knative Serving deployment
+
+Run this an conform that confirm that you see out put similar to that show after the command:
+
+```shell
+kubectl get deployment -n knative-serving
+```
+
+should show something like this:
+
+```text
+NAME                   READY   UP-TO-DATE   AVAILABLE   AGE
+activator              1/1     1            1           6m52s
+autoscaler             1/1     1            1           6m51s
+autoscaler-hpa         1/1     1            1           6m50s
+controller             1/1     1            1           6m51s
+net-istio-controller   1/1     1            1           6m48s
+net-istio-webhook      1/1     1            1           6m47s
+webhook                1/1     1            1           6m50s
+```
 
