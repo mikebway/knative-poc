@@ -31,7 +31,8 @@ For example, see [Installing Knative serving on Google Cloud](https://cloud.goog
 
 ### Support tools
 
-* [`cosign`](https://docs.sigstore.dev/cosign/system_config/installation/) for cryptographic signature verification.
+* [`cosign`](https://docs.sigstore.dev/cosign/system_config/installation/) for cryptographic signature verification;
+  not essential, only needed if you want to verify downloads have not been tampered with before downloading them.
   ```shell
   brew install cosign
   ```
@@ -39,6 +40,11 @@ For example, see [Installing Knative serving on Google Cloud](https://cloud.goog
   ```shell
   brew install jq
   ```
+  
+* The [Modify Header Value (HTTP Headers)](https://chromewebstore.google.com/detail/modify-header-value-http/cbdibdfhahmknbkkojljfncpnhmacdek)
+  Chrome browser extension. This will allow you to set the `Host` header on your browser requests to something other
+  than `localhost` in order to have Knative Serving recognize the request and trigger a matching on-demand service.
+
 
 ### Install the Knative CLI
 
@@ -55,6 +61,7 @@ Check for the latest release version of Knative [here](https://github.com/knativ
 `v1.15.4` strings in the following as appropriate.
 
 ```shell
+# Replace v1.15.4 with the appropriate, more recent version string as necessary
 kubectl apply -f https://github.com/knative/operator/releases/download/knative-v1.15.4/operator.yaml
 ```
 
@@ -78,46 +85,74 @@ Should you wish to revert to naked Minikube, sans Knative Serving, exectute the 
 steps:
 
 ```shell
+# Replace v1.15.4 with the appropriate, more recent version string as necessary
 kubectl delete -f https://github.com/knative/operator/releases/download/knative-v1.15.4/operator.yaml
 ```
 
 **Be warned:** this can take several minutes to complete; be patient.
 
-### Install Knative Serving
+### Enable Knative Serving & Eventing
 
-Establish the `knative-serving` namespace and `knative-service` resource type:
+Establish the `knative-serving` and `knative-eventing` namespaces, and the `knative-serving` and `knative-eventing` 
+resource types:
 
 ```shell
 kubectl apply -f namespace-kind.yaml
 ```
 
-If yoou started with the Minikube configuration described by the [Running Istio on Minikube locally](https://github.com/mikebway/k8s-istio-poc)
+If you started with the Minikube configuration described by the [Running Istio on Minikube locally](https://github.com/mikebway/k8s-istio-poc)
 project then the external IP address of your Istio ingress gateway will be 127.0.0.1. If you followed some other path
-to set up your local Kubernetes test cluster with Istio, runn the following and record the **EXTERNAL-IP** address
+to set up your local Kubernetes test cluster with Istio, run the following and record the **EXTERNAL-IP** address
 value that is displayed:
 
 ```shell
 kubectl get svc istio-ingressgateway -n istio-system
 ```
 
-### Verify the Knative Serving deployment
+#### Verify the Knative Serving deployment
 
-Run this an conform that confirm that you see out put similar to that show after the command:
+Run this and that confirm that you see out put similar to that show after the command:
 
 ```shell
 kubectl get deployment -n knative-serving
 ```
 
-should show something like this:
+... which should show something like this:
 
 ```text
 NAME                   READY   UP-TO-DATE   AVAILABLE   AGE
-activator              1/1     1            1           6m52s
-autoscaler             1/1     1            1           6m51s
-autoscaler-hpa         1/1     1            1           6m50s
-controller             1/1     1            1           6m51s
-net-istio-controller   1/1     1            1           6m48s
-net-istio-webhook      1/1     1            1           6m47s
-webhook                1/1     1            1           6m50s
+activator              1/1     1            1           52s
+autoscaler             1/1     1            1           51s
+autoscaler-hpa         1/1     1            1           50s
+controller             1/1     1            1           51s
+net-istio-controller   1/1     1            1           48s
+net-istio-webhook      1/1     1            1           47s
+webhook                1/1     1            1           50s
 ```
+
+#### Verify the Knative Eventing deployment
+
+Run this and that confirm that you see out put similar to that show after the command:
+
+```shell
+kubectl get deployment -n knative-eventing
+```
+
+... which should show something like this:
+
+```text
+NAME                    READY   UP-TO-DATE   AVAILABLE   AGE
+eventing-controller     1/1     1            1           51s
+eventing-webhook        1/1     1            1           49s
+imc-controller          1/1     1            1           46s
+imc-dispatcher          1/1     1            1           45s
+job-sink                1/1     1            1           50s
+mt-broker-controller    1/1     1            1           43s
+mt-broker-filter        1/1     1            1           44s
+mt-broker-ingress       1/1     1            1           43s
+pingsource-mt-adapter   0/0     0            0           50s
+```
+
+
+
 
