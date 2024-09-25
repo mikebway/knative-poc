@@ -2,7 +2,7 @@
 
 ## Objective
 
-Demonstrate how Knative can be deployed on top of Minikube in an Apple Mac environment.
+Demonstrate how Knative can be deployed and used on top of Minikube in an Apple Mac environment.
 
 ## Prerequisites
 
@@ -12,6 +12,14 @@ running.
 
 While this project can be used as a rough map for Windows and Linux installation, it's primary audience is 
 Mac users. As a Mac user, it is assumed that have [Homebrew](https://brew.sh/) installed.
+
+Again, as a Mac user you are almost certainly using Zsh as your command line shell. If so, and you have not done so 
+already, you might want to add this to your `.zshrc` file (or just run it on your command line as a one off):
+
+```shell
+# Ignore # comment lines in interactive command pastes
+setopt interactivecomments
+```
 
 You should familiarize yourself with the basic architecture of Knative before starting. That way you will have a
 better sense for what each of the steps is accomplishing. A quick scan of the following will get you started:
@@ -24,10 +32,10 @@ better sense for what each of the steps is accomplishing. A quick scan of the fo
 
 The two primary mechanisms to install Knative are via [YAML files alone](https://knative.dev/docs/install/yaml-install/) 
 or through a [Kubernetes Operator](https://knative.dev/docs/install/operator/knative-with-operators/). For simplicity,
-we have used the operator approach. 
+we have followed the operator approach here. 
 
-Installing Knative into a managed Kubernetes cluster, e.g. GKE on Google Cloud, is likely to follow a different process.
-For example, see [Installing Knative serving on Google Cloud](https://cloud.google.com/kubernetes-engine/enterprise/knative-serving/docs/install/on-gcp).
+Installing Knative into a cloud vendor managed Kubernetes cluster, e.g. GKE on Google Cloud, is likely to follow a 
+different process. For example, see [Installing Knative serving on Google Cloud](https://cloud.google.com/kubernetes-engine/enterprise/knative-serving/docs/install/on-gcp).
 
 ### Support tools
 
@@ -153,6 +161,20 @@ mt-broker-ingress       1/1     1            1           43s
 pingsource-mt-adapter   0/0     0            0           50s
 ```
 
+## Uninstalling Knative
 
+To undo all of this good work and bring your cluster back to its original state, execute the following:
+
+```shell
+# Remove Knative Serving
+bectl delete KnativeServing knative-serving -n knative-serving
+
+# Remove Knative Eventing
+kubectl delete KnativeEventing knative-eventing -n knative-eventing
+
+# Remove the Knative Operator
+# (replace v1.15.4 with the appropriate, more recent version string as necessary)
+kubectl delete -f https://github.com/knative/operator/releases/download/knative-v1.15.4/operator.yaml
+```
 
 
