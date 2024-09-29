@@ -1,0 +1,15 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: graphql
+  namespace: kn-poc-services
+spec:
+  template:
+    spec:
+      containers:
+        - image: kn-graphql:v1
+          ports:
+            - containerPort: 4000
+          env:
+            - name: NODE_ENV
+              value: "test"

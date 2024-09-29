@@ -1,0 +1,15 @@
+{
+  "name": "knative-poc-graphql",
+  "version": "0.1.0",
+  "description": "GraphQL service to be run as a Knative Service",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Mike Broadway",
+  "license": "ISC",
+  "dependencies": {
+    "apollo-server": "^3.13.0",
+    "graphql": "^16.9.0"
+  }
+}

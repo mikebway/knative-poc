@@ -19,3 +19,13 @@ kind: KnativeEventing
 metadata:
   name: knative-eventing
   namespace: knative-eventing
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: kn-poc-services
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: kn-poc-eventing
