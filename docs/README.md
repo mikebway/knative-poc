@@ -19,6 +19,13 @@ try again.
   ```shell
   minikube tunnel
   ```
+  If you get an error starting the tunnel to the effect `... another tunnel is already running ...` when you 
+  don't have the tunnel in another shell window, delete the local file found at:
+  ```shell
+  rem .minikube/profiles/minikube/.tunnel_lock
+  ```
+  If you close a shell window without Ctrl-C shutting down an open tunnel, the lock file can be left in place even
+  though the tunnel is not running.
 * Don't forget to specify namespaces with using `kn` to list or manage Knative Serving:
   ```shell
   kn service list -n kn-poc-services
@@ -35,3 +42,20 @@ try again.
   ```shell
   istioctl dashboard kiali
   ```
+
+## Open questions
+
+Do we need to do this?
+
+```shell
+kubectl label namespace knative-serving istio-injection=enabled
+```
+
+or this:
+
+```shell
+kubectl label namespace kn-poc-services istio-injection=enabled
+kubectl label namespace kn-poc-eventing istio-injection=enabled
+```
+
+

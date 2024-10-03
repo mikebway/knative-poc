@@ -1,0 +1,5 @@
+data:
+  external-gateways: |
+    - name: knative-ingress-gateway
+      namespace: knative-serving
+      service: istio-ingressgateway.istio-system.svc.cluster.local

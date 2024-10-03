@@ -50,11 +50,18 @@ eval $(minikube docker-env)
 npm install
 
 # Build the docker container image
-docker build -t kn-graphql:v1 .
+docker build -t dev.local/kn-graphql:v1 .
 
 # Create the Knative service  
 kubectl apply -f kn-service.yaml
 ```
+
+**IMPORTANT:** The `dev.local/` prefix of the `kn-graphql` image tag is required for Knative Serving to recognize
+that the container image is to be found in the local Minikube registry and not in the default `docker.io` registry.
+
+Deploying containers to Minikube outside of Knative Serving does not require this prefix; Minikube naturally assumes
+that an unadorned image reference is for the Minikube registry if that addon has been installed. Knative does not
+know that it is running under Minikube and behaves as it would when running in any normal Kubernetes cluster.
 
 ## Confirm that the service is known to Knative Serving
 
@@ -66,7 +73,62 @@ kn service list -n kn-poc-services
 
 You should see something like this:
 
-```shell
+```text
+NAME      URL                                     LATEST          AGE     CONDITIONS   READY   REASON
+graphql   http://graphql.kn-poc-services.kn.com   graphql-00001   8m57s   3 OK / 3     True
+```
+
+If you see something like this instead, see **Troubleshooting** below.
+
+```text
 NAME      URL                                                LATEST   AGE   CONDITIONS   READY   REASON
 graphql   http://graphql.kn-poc-services.svc.cluster.local            12s   0 OK / 3     False   RevisionMissing : Configuration "graphql" does not have any ready Revision.
 ```
+
+Now run this:
+
+```shell
+kubectl get revision -n kn-poc-services
+```
+
+You should see something like this:
+
+```text
+NAME            CONFIG NAME   GENERATION   READY   REASON   ACTUAL REPLICAS   DESIRED REPLICAS
+graphql-00001   graphql       1            True             0                 0
+```
+
+If you see something like this instead, see **Troubleshooting** below.
+
+```text
+NAME            CONFIG NAME   GENERATION   READY   REASON             ACTUAL REPLICAS   DESIRED REPLICAS
+graphql-00001   graphql       1            False   ContainerMissing
+```
+
+## Troubleshooting
+
+If you don't see what you expect and some type of error is indicated, then you can get more details with:
+
+```shell
+kubectl get revision -n kn-poc-services -o yaml
+```
+
+Most likely, your issue will be with one of these conditions:
+
+* The `dev.local/kn-graphql:v1` container image is not present in the Minikube container registry.
+* Knative Serving has not been instructed to ignore digest validation of containers in the `dev.local` registry.
+
+You may be able to learn more from the logs of the Knative Server `controller` pod. List the pods in the `knative-serving`
+namespace to find the instance name for the controller pod:
+
+```shell
+kubectl get pod -n knative-serving
+```
+
+Then substitute for the `controller-67c77bd44d-mr8gl` instance name in this (the optional `-f` causes the log to be followed rather 
+than just dumping the most recent entries):
+
+```shell
+kubectl logs -n knative-serving controller-67c77bd44d-mr8gl -f
+```
+

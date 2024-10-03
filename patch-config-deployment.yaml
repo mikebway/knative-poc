@@ -1,0 +1,4 @@
+data:
+  # List of repositories for which tag to digest resolving should be skipped
+  registries-skipping-tag-resolving: "kind.local,ko.local,dev.local"
+

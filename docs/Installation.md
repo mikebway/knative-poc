@@ -107,6 +107,34 @@ kubectl apply -f namespace-kind.yaml
 In addition, this also established the `kn-poc-services` and `kn-poc-eventing` namespaces that we will deploy 
 on demand workload services to.
 
+### Configure Knative with knowledge of the cluster gateway
+
+Inform Knative which cluster gateway is being used and how to connect to it:
+
+```shell
+kubectl patch configmap/config-istio -n knative-serving --patch-file patch-config-istio.yaml
+```
+
+### Tell Knative to skip digest checks for local container registries
+
+This is necessary to prevent Knative from rejecting local container images because they have no manifest and no 
+digest recorded at [index.docker.io/v2/...](https://index.docker.io/v2), and there are no credentials for that!
+
+Instruct Knative Serving to ignore digests for local container repositories under the `kind.local`, `ko.local`,
+and `dev.local` domains:
+
+```shell
+kubectl patch configmap/config-deployment -n knative-serving --patch-file patch-config-deployment.yaml
+```
+
+### Configure webhook domain(s)
+
+Inform Knative which domain name suffixes to use for services that are to be exposed outside the cluster:
+
+```shell
+kubectl patch configmap/config-domain -n knative-serving --patch-file patch-config-domain.yaml
+```
+
 ### Record the cluster gateway IP address
 
 If you started with the Minikube configuration described by the [Running Istio on Minikube locally](https://github.com/mikebway/k8s-istio-poc)

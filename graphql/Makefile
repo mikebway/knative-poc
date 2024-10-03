@@ -7,7 +7,7 @@ help: ## List of available commands
 .PHONY: build
 build: npm.installed ## Build all of the GraphQL server container in the Minikube package store
 	eval $(minikube docker-env) &\
- 	docker build -t kn-graphql:v1 .
+ 	docker build -t dev.local/kn-graphql:v1 .
 
 .PHONY: deploy
 deploy: ## Deploy the container as a Knative service
