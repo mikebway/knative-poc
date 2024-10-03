@@ -2,7 +2,7 @@
 
 ## Objective
 
-Demonstrate how Knative can be deployed and used on top of Minikube in an Apple Mac environment.
+Demonstrate how [Knative](https://knative.dev/docs/) can be deployed and used on top of Minikube in an Apple Mac environment.
 
 ## Installation
 
