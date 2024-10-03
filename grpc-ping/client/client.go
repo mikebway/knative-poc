@@ -15,7 +15,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 
-	pb "github.com/mikebway/knative-poc/grpc-ping/proto"
+	pb "github.com/mikebway/knative-poc/grpc-ping/ping"
 )
 
 var (

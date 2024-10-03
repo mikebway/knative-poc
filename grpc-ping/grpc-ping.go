@@ -14,7 +14,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 
-	ping "github.com/mikebway/knative-poc/grpc-ping/proto"
+	ping "github.com/mikebway/knative-poc/grpc-ping/ping"
 )
 
 var port = 8080
