@@ -10,8 +10,8 @@ FROM golang:1.23-bookworm
 WORKDIR /source
 
 # Pull down the Go modules we will need before bringing our Go source over
-COPY go.mod ./
-RUN go mod download
+COPY . ./
+RUN go mod tidy
 
 # Bring the Go source into the container
 COPY *.go ./

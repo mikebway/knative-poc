@@ -2,7 +2,7 @@ apiVersion: serving.knative.dev/v1
 kind: Service
 metadata:
   name: grpc-ping
-  namespace: default
+  namespace: kn-poc-services
 spec:
   template:
     spec:
