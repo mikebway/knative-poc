@@ -1,0 +1,14 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: grpc-ping
+  namespace: default
+spec:
+  template:
+    spec:
+      containers:
+      - image: dev.local/kn-grpc-ping:v1
+        ports:
+          - name: h2c
+            containerPort: 8080
+
