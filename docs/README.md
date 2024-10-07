@@ -22,7 +22,7 @@ try again.
   If you get an error starting the tunnel to the effect `... another tunnel is already running ...` when you 
   don't have the tunnel in another shell window, delete the local file found at:
   ```shell
-  rem .minikube/profiles/minikube/.tunnel_lock
+  rm ~/.minikube/profiles/minikube/.tunnel_lock
   ```
   If you close a shell window without Ctrl-C shutting down an open tunnel, the lock file can be left in place even
   though the tunnel is not running.

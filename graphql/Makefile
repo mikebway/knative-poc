@@ -18,6 +18,14 @@ deploy: ## Deploy the container as a Knative service
 undeploy: ## Destroy the deployment/pod/service in Kubernetes
 	kubectl delete -f kn-service.yaml
 
+.PHONY: run
+run: npm.installed ## Run the service locally with nodemon for auto reload
+	GRPC_SERVICE=grpc-ping.kn-poc-services.kn.com PORT=80 npx nodemon ./server.js
+
+.PHONY: protobuf
+protobuf: npm.installed ## Regenerate the protocol buffer gRPC Ping service definition
+	npx pbjs -t static-module -w commonjs -o gen/grpc-ping.cjs ../grpc-ping/proto/*.proto
+
 # Update the npm packages if necessary
 npm.installed: package.json
 	npm install

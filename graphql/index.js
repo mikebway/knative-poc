@@ -3,6 +3,7 @@ const {
     ApolloServerPluginLandingPageLocalDefault
 } = require('apollo-server-core');
 const {GraphQLError} = require("graphql/error");
+const pino = require('pino')();
 
 // Construct a schema, using GraphQL schema language
 const typeDefs = gql`
@@ -32,6 +33,7 @@ const resolvers = {
 
         // Fetch the profile of a person whose UUID ID matches that given
         getPerson(id) {
+            pino.info("getPerson: " + id)
             return {
                 id:                 "59f5d2b5-ee04-4e1a-9a68-f11a90b1665a",
                 familyName:         "Potter",
