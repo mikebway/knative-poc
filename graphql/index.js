@@ -49,6 +49,7 @@ const server = new ApolloServer({
     typeDefs,
     resolvers,
     csrfPrevention: true,
+    introspection: true,
     cache: 'bounded',
     context: ({ req }) => {
         // get the user token from the headers

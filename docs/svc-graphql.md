@@ -153,3 +153,7 @@ and see something like this:
 
 You will not be able to submit a query without getting an authorization error, but at least you know that the Kubernetes
 ingress gateway routed your request correctly. Authorization is the next step.
+
+Don't worry if you see a "Schema Introspection Failure" and "Unable to reach server" projected on top of the Graphiql 
+display, that's just because you have not provided authorization credentials. If you can see a Graphiql sandbox 
+display and not a 404 error, you are good to go.
