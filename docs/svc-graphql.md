@@ -105,7 +105,7 @@ NAME            CONFIG NAME   GENERATION   READY   REASON             ACTUAL REP
 graphql-00001   graphql       1            False   ContainerMissing
 ```
 
-## Troubleshooting
+### Troubleshooting
 
 If you don't see what you expect and some type of error is indicated, then you can get more details with:
 
@@ -132,3 +132,24 @@ than just dumping the most recent entries):
 kubectl logs -n knative-serving controller-67c77bd44d-mr8gl -f
 ```
 
+## Testing
+
+The Istio ingress gateway and Knative Serving are now cooperating to route requests for `graphql.kn-poc-services.kn.com` 
+URLs to the `kn-graphql` service. But how can you get a browser to send a request to a URL with that domain name to 
+the Minikube cluster running on your laptop? 
+
+To reach Minikube, you need to target a URL in the form `http://<your-system-name>.local`, but that will just go to the 
+`authtest` services. To reach the `kn-graphql` service, you need to override the `Host` header of your requests so that  
+the Istio ingress gateway recognizes the request as being for the `kn-graphql` service. That's where the ModHeader 
+Chrome extension comes in.
+
+See [ModHeader Chrome Extension](modheader.md) for instructions on how to override the `Host` header in some or all of 
+your browser requests.
+
+Withe the `Host` header set to `graphql.kn-poc-services.kn.com`, you will be able to reach the Graphiql user interface
+and see something like this:
+
+![Unauthenticated Graphiql](graphiql-not-authorized.png)
+
+You will not be able to submit a query without getting an authorization error, but at least you know that the Kubernetes
+ingress gateway routed your request correctly. Authorization is the next step.

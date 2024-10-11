@@ -7,7 +7,7 @@ As a baseline, this project assumes that you have already followed the instructi
 running.
 
 While this project can be used as a rough map for Windows and Linux installation, it's primary audience is 
-Mac users. As a Mac user, it is assumed that have [Homebrew](https://brew.sh/) installed.
+Mac users. As a Mac user, it is assumed that you have [Homebrew](https://brew.sh/) installed.
 
 Again, as a Mac user you are almost certainly using Zsh as your command line shell. If so, and you have not done so 
 already, you might want to add this to your `.zshrc` file (or just run it on your command line as a one off):
@@ -45,10 +45,9 @@ different process. For example, see [Installing Knative serving on Google Cloud]
   brew install jq
   ```
   
-* The [Modify Header Value (HTTP Headers)](https://chromewebstore.google.com/detail/modify-header-value-http/cbdibdfhahmknbkkojljfncpnhmacdek)
-  Chrome browser extension. This will allow you to set the `Host` header on your browser requests to something other
-  than `localhost` in order to have Knative Serving recognize the request and trigger a matching on-demand service.
-
+* The [ModHeader](https://modheader.com/modheader)  Chrome browser extension. This will allow you to set the `Host` 
+  header on your browser requests to something other than `localhost` in order to have Knative Serving recognize the 
+  request and trigger a matching on-demand service.
 
 ### Install the Knative CLI
 

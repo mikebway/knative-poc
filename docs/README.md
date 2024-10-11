@@ -4,7 +4,7 @@
 
 Demonstrate how [Knative](https://knative.dev/docs/) can be deployed and used on top of Minikube in an Apple Mac environment.
 
-## Installation
+## Knative installation
 
 Follow the instructions here: [Install Knative on Minikube locally](Installation.md)
 
@@ -12,8 +12,7 @@ Follow the instructions here: [Install Knative on Minikube locally](Installation
 a few seconds. If any step fails with some difficult to explain error, wait a few beats (even quite a lot of beats) and
 try again.
 
-
-## Reminders & dashboards
+### Reminders & dashboards
 
 * Don't forget to start the TCP tunnel that connects localhost port 80 to the cluster:
   ```shell
@@ -43,19 +42,7 @@ try again.
   istioctl dashboard kiali
   ```
 
-## Open questions
+## Doing some Knative Serving
 
-Do we need to do this?
-
-```shell
-kubectl label namespace knative-serving istio-injection=enabled
-```
-
-or this:
-
-```shell
-kubectl label namespace kn-poc-services istio-injection=enabled
-kubectl label namespace kn-poc-eventing istio-injection=enabled
-```
-
+Deploy and run a GraphQL service using Knative Serving: [GraphQL service](svc-graphql.md).
 
