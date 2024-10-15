@@ -11,6 +11,8 @@
   "dependencies": {
     "apollo-server": "^3.13.0",
     "graphql": "^16.9.0",
+    "@grpc/grpc-js": "^1.4.1",
+    "@grpc/proto-loader": "^0.6.4",
     "pino": "^8.11.0"
   },
   "devDependencies": {

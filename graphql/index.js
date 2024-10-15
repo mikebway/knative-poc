@@ -4,6 +4,9 @@ const {
 } = require('apollo-server-core');
 const {GraphQLError} = require("graphql/error");
 const pino = require('pino')();
+const grpc = require('@grpc/grpc-js');
+const protoLoader = require('@grpc/proto-loader');
+const path = require('path');
 
 // Construct a schema, using GraphQL schema language
 const typeDefs = gql`
@@ -23,8 +26,27 @@ const typeDefs = gql`
 
         # Fetch the profile of a person whose UUID ID matches that given
         getPerson(id: ID!): Person
+        
+        # Ping service query
+        ping(message: String!): String
     }
 `;
+
+// Load the Ping service protobuf
+const pingProto = protoLoader.loadSync(
+    path.resolve(__dirname, '../grpc-ping/proto/ping.proto'),
+    {
+        keepCase: true,
+        longs: String,
+        enums: String,
+        defaults: true,
+        oneofs: true,
+    }
+);
+const pingProto = grpc.loadPackageDefinition(pingProto).ping;
+
+// Create the Ping service client
+const pingClient = new pingProto.PingService('localhost:50051', grpc.credentials.createInsecure());
 
 // Provide resolver functions for your schema fields
 const resolvers = {
@@ -41,6 +63,19 @@ const resolvers = {
                 displayName:        "Harry Potter",
                 displayLastFirst:   "Potter, Harry"
             }
+        },
+
+        // Ping service resolver
+        ping: (_, { message }) => {
+            return new Promise((resolve, reject) => {
+                client.ping({ msg: message }, (error, response) => {
+                    if (error) {
+                        reject(error);
+                    } else {
+                        resolve(response.msg);
+                    }
+                });
+            });
         }
     },
 };

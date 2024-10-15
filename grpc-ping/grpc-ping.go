@@ -1,6 +1,3 @@
-//go:build grpcping
-// +build grpcping
-
 package main
 
 import (
@@ -17,7 +14,7 @@ import (
 	ping "github.com/mikebway/knative-poc/grpc-ping/ping"
 )
 
-var port = 8080
+var port = 50051
 
 type pingServer struct {
 }
