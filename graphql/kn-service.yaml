@@ -13,3 +13,7 @@ spec:
           env:
             - name: NODE_ENV
               value: "test"
+            - name: "GRPC_SERVICE"
+              value: "grpc-ping.kn-poc-services.svc.cluster.local"
+            - name: GRPC_PORT
+              value: "80"

@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package ping;
 
+option go_package = "./ping;ping";
+
 service PingService {
   rpc Ping(Request) returns (Response) {}
   rpc PingStream(stream Request) returns (stream Response) {}

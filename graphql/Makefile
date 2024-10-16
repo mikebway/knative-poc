@@ -5,7 +5,7 @@ help: ## List of available commands
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
 .PHONY: build
-build: npm.installed ## Build all of the GraphQL server container in the Minikube package store
+build: npm.installed ping.proto ## Build all of the GraphQL server container in the Minikube package store
 	eval $(minikube docker-env) &\
  	docker build -t dev.local/kn-graphql:v1 .
 
@@ -19,12 +19,12 @@ undeploy: ## Destroy the deployment/pod/service in Kubernetes
 	kubectl delete -f kn-service.yaml
 
 .PHONY: run
-run: npm.installed ## Run the service locally with nodemon for auto reload
-	GRPC_SERVICE=grpc-ping.kn-poc-services.kn.com PORT=80 npx nodemon ./server.js
+run: npm.installed ping.proto ## Run the service locally with nodemon for auto reload
+	NODE_ENV=test GRPC_SERVICE=localhost GRPC_PORT=50051 npx nodemon ./server.js
 
-.PHONY: protobuf
-protobuf: npm.installed ## Regenerate the protocol buffer gRPC Ping service definition
-	npx pbjs -t static-module -w commonjs -o gen/grpc-ping.cjs ../grpc-ping/proto/*.proto
+# Copy protobuf file into the node app runtime directory
+ping.proto:
+	cp ../grpc-ping/api/v1/ping.proto ./ping.proto
 
 # Update the npm packages if necessary
 npm.installed: package.json

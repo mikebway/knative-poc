@@ -22,8 +22,6 @@ const typeDefs = gql`
     }
     
     type Query {
-        hello: String
-
         # Fetch the profile of a person whose UUID ID matches that given
         getPerson(id: ID!): Person
         
@@ -33,8 +31,8 @@ const typeDefs = gql`
 `;
 
 // Load the Ping service protobuf
-const pingProto = protoLoader.loadSync(
-    path.resolve(__dirname, '../grpc-ping/proto/ping.proto'),
+const pingProtoDef = protoLoader.loadSync(
+    path.resolve(__dirname, 'ping.proto'),
     {
         keepCase: true,
         longs: String,
@@ -43,16 +41,20 @@ const pingProto = protoLoader.loadSync(
         oneofs: true,
     }
 );
-const pingProto = grpc.loadPackageDefinition(pingProto).ping;
+const pingProto = grpc.loadPackageDefinition(pingProtoDef).ping;
+
+// Lodge the Ping service endpoint name and port number
+const GRPC_SERVICE = process.env.GRPC_SERVICE || 'localhost';
+const GRPC_PORT = process.env.GRPC_PORT || 50051;
 
 // Create the Ping service client
-const pingClient = new pingProto.PingService('localhost:50051', grpc.credentials.createInsecure());
+grpcServiceLocation = `${GRPC_SERVICE}:${GRPC_PORT}`
+console.log('locating gRPC service at: ' + grpcServiceLocation)
+const pingClient = new pingProto.PingService(grpcServiceLocation, grpc.credentials.createInsecure());
 
 // Provide resolver functions for your schema fields
 const resolvers = {
     Query: {
-        hello: () => 'Hello world!',
-
         // Fetch the profile of a person whose UUID ID matches that given
         getPerson(id) {
             pino.info("getPerson: " + id)
@@ -68,7 +70,7 @@ const resolvers = {
         // Ping service resolver
         ping: (_, { message }) => {
             return new Promise((resolve, reject) => {
-                client.ping({ msg: message }, (error, response) => {
+                pingClient.ping({ msg: message }, (error, response) => {
                     if (error) {
                         reject(error);
                     } else {

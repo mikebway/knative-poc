@@ -17,7 +17,7 @@ RUN go mod tidy
 COPY *.go ./
 
 # Build the service
-RUN go build -tags=grpcping -o /service
+RUN go build -o /service
 
 # Make port 8080 visible outside the container
 EXPOSE 8080

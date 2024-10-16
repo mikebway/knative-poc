@@ -106,6 +106,17 @@ kubectl apply -f namespace-kind.yaml
 In addition, this also established the `kn-poc-services` and `kn-poc-eventing` namespaces that we will deploy 
 on demand workload services to.
 
+### Make Istio responsible for the `kn-poc-*` namespaces
+
+Istio will only install Envoy sidecars in pods that belong to a namespace that has been labeled so, to have
+Envoy proxy added to pods created in the `kn-poc-services` and `kn-poc-eventing` namespaces we have to add a label
+to their defintions:
+
+```shell
+kubectl label namespace kn-poc-services istio-injection=enabled
+kubectl label namespace kn-poc-eventing istio-injection=enabled
+```
+
 ### Configure Knative with knowledge of the cluster gateway
 
 Inform Knative which cluster gateway is being used and how to connect to it:
