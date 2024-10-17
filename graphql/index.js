@@ -7,6 +7,7 @@ const pino = require('pino')();
 const grpc = require('@grpc/grpc-js');
 const protoLoader = require('@grpc/proto-loader');
 const path = require('path');
+const jwt = require('jsonwebtoken');
 
 // Construct a schema, using GraphQL schema language
 const typeDefs = gql`
@@ -24,6 +25,9 @@ const typeDefs = gql`
     type Query {
         # Fetch the profile of a person whose UUID ID matches that given
         getPerson(id: ID!): Person
+
+        # Query to return the JWT subject
+        getJwtSubject: String
         
         # Ping service query
         ping(message: String!): String
@@ -67,6 +71,12 @@ const resolvers = {
             }
         },
 
+
+        // Resolver to return the JWT subject
+        getJwtSubject: (_, __, { user }) => {
+            return user;
+        },
+
         // Ping service resolver
         ping: (_, { message }) => {
             return new Promise((resolve, reject) => {
@@ -90,11 +100,11 @@ const server = new ApolloServer({
     cache: 'bounded',
     context: ({ req }) => {
         // get the user token from the headers
-        const token = req.headers.authorization || '';
+        const token = req.headers['x-extauth-authorization'] || '';
 
-        // Very crude, hard-wired, authentication!
-        if (token !== 'ABumbleBeeInAmber') {
-            throw new GraphQLError('User is not authenticated', {
+        // There must be an authorization token
+        if (!token) {
+            throw new GraphQLError('x-extauth-authorization header is missing', {
                 extensions: {
                     code: 'UNAUTHENTICATED',
                     http: { status: 401 },
@@ -102,8 +112,19 @@ const server = new ApolloServer({
             });
         }
 
-        // add the user to the context
-        return { 'authenticated': true };
+        try {
+            // Unpack the JWT bearer token and extract the subject
+            const decoded = jwt.decode(token.replace('Bearer ', ''));
+            return { user: decoded.sub };
+
+        } catch (err) {
+            throw new GraphQLError('Invalid authorization token', {
+                extensions: {
+                    code: 'UNAUTHENTICATED',
+                    http: { status: 401 },
+                },
+            });
+        }
     },
     // formatError: (err) => {
     //   return new Error("Error code: " + err.extensions?.code)

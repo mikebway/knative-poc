@@ -9,10 +9,11 @@
   "author": "Mike Broadway",
   "license": "ISC",
   "dependencies": {
-    "apollo-server": "^3.13.0",
-    "graphql": "^16.9.0",
     "@grpc/grpc-js": "^1.4.1",
     "@grpc/proto-loader": "^0.6.4",
+    "apollo-server": "^3.13.0",
+    "graphql": "^16.9.0",
+    "jsonwebtoken": "^9.0.2",
     "pino": "^8.11.0"
   },
   "devDependencies": {
