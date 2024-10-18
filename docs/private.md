@@ -2,6 +2,10 @@
 
 Having Knative services accessible from the public internet is not, generally speaking, a good idea. 
 
+You can label an individual Knative service to restrict access to only within the cluster (see [Configuring private Services](https://knative.dev/docs/serving/services/private-services/)), 
+but the default is public access. Sooner or later someone will forget to apply the label for their service and it
+might be publically accessible for months before anyone notices.
+
 **Bottom line:** If you don't want to ever have Knative Services accessible from the public internet, don't 
 make the Knative Serving `config-domain` and `config-istio` ConfigMap changes that we made following the initial
 [Install Knative on Minikube locally](Installation.md) instructions. That allowed us to verify everything was working from
