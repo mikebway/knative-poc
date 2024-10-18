@@ -22,7 +22,7 @@ undeploy: ## Destroy the deployment/pod/service in Kubernetes
 
 .PHONY: run
 run: ## Run the service locally
-	go run .
+	PORT=50051 go run .
 
 .PHONY: generate
 generate: ## Regenerate the protocol buffer gRPC Ping service definition

@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mfe2grpc
+  namespace: authtest
+  labels:
+    app: mfe2grpc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mfe2grpc
+  template:
+    metadata:
+      labels:
+        app: mfe2grpc
+    spec:
+      containers:
+        - name: mfe2grpc
+          image: mfe2grpc:v1
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "0.1"
+            limits:
+              memory: "128Mi"
+              cpu: "0.2"
+          env:
+            - name: NODE_ENV
+              value: "test"
+            - name: "GRPC_SERVICE"
+              value: "grpc-ping.kn-poc-services.svc.cluster.local"
+            - name: GRPC_PORT
+              value: "80"
