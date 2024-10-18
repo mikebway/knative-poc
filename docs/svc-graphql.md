@@ -22,6 +22,7 @@ help          List of available commands
 build         Build all of the GraphQL server container in the Minikube package store
 deploy        Deploy the container as a Knative service
 undeploy      Destroy the deployment/pod/service in Kubernetes
+run           Run the service locally with nodemon for auto reload
 ```
 
 At a minimum, you will want to do the following:
@@ -144,7 +145,9 @@ the Istio ingress gateway recognizes the request as being for the `kn-graphql` s
 Chrome extension comes in.
 
 See [ModHeader Chrome Extension](modheader.md) for instructions on how to override the `Host` header in some or all of 
-your browser requests.
+your browser requests. Suggestion: configure **ModHeader** to only set the `Host` header to `graphql.kn-poc-services.kn.com`
+when the URL matches `.*://<your-system-name>.local/graphql`; that way, you can still reach the `authtest` service with
+other URL patterns from any of your browser tabs.
 
 Withe the `Host` header set to `graphql.kn-poc-services.kn.com`, you will be able to reach the Graphiql user interface
 and see something like this:
@@ -157,3 +160,43 @@ ingress gateway routed your request correctly. Authorization is the next step.
 Don't worry if you see a "Schema Introspection Failure" and "Unable to reach server" projected on top of the Graphiql 
 display, that's just because you have not provided authorization credentials. If you can see a Graphiql sandbox 
 display and not a 404 error, you are good to go.
+
+## Testing with `curl`
+
+Using `curl`, you can test the service without the need for the ModHeader Chrome extension to fake the `Host` header. 
+Run the following:
+
+```shell
+curl -X POST http://localhost/graphql \
+  -H "Host: graphql.kn-poc-services.kn.com" \
+  -H "Cookie: session=Mickey Mouse" \
+  -H "Content-Type: application/json" \
+  -d '{"query": "query { getPerson(id: \"59f5d2b5-ee04-4e1a-9a68-f11a90b1665a\") { id familyName givenName displayName } }"}'
+```
+
+The faked `Host` header will cause the Istio ingress gateway to route the request to the `graphql` service, while the
+`Cookie` header will provide the authorization credentials needed to access the service. The ingress gateway will
+recognize the session cookie and generate a session JWT token that the `kn-graphql` service will accept.
+
+You should get JSON back from the GraphQL service that looks like this:
+
+```json
+{"data":{"getPerson":{"id":"59f5d2b5-ee04-4e1a-9a68-f11a90b1665a","familyName":"Potter","givenName":"Harry","displayName":"Harry Potter"}}}
+```
+
+The `getJwtSubject` function in the `kn-graphql` service will extract the `sub` claim from the JWT token and return
+that. Check that out with this `curl` command:
+
+```shell
+curl -X POST http://localhost/graphql \
+  -H "Host: graphql.kn-poc-services.kn.com" \
+  -H "Cookie: session=Mickey Mouse" \
+  -H "Content-Type: application/json" \
+  -d '{"query": "query { getJwtSubject }"}'
+```
+
+## Next ...
+
+Now we want to add a simple gRPC service that the GraphQL service can call. See [Build and Deploy the `kn-grpc-ping` Knative Service](svc-grpc.md).
+```
+

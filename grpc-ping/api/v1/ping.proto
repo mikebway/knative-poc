@@ -10,7 +10,7 @@ service PingService {
 }
 
 message Request {
-  string msg = 1;
+    string msg = 1;
 }
 
 message Response {

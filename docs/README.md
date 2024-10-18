@@ -44,5 +44,6 @@ try again.
 
 ## Doing some Knative Serving
 
-Deploy and run a GraphQL service using Knative Serving: [GraphQL service](svc-graphql.md).
+* Deploy and run a GraphQL service using Knative Serving: [GraphQL service](svc-graphql.md).
+* Deploy and run a gRPC service using Knative Serving: [gRPC service](svc-grpc.md).
 

@@ -44,6 +44,10 @@ different process. For example, see [Installing Knative serving on Google Cloud]
   ```shell
   brew install jq
   ```
+* [grpcurl](https://github.com/fullstorydev/grpcurl) for making gRPC calls from the command line.
+  ```shell
+  brew install grpcurl
+  ```
   
 * The [ModHeader](https://modheader.com/modheader)  Chrome browser extension. This will allow you to set the `Host` 
   header on your browser requests to something other than `localhost` in order to have Knative Serving recognize the 
