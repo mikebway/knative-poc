@@ -49,3 +49,12 @@ try again.
   i.e. a Knative service calling Knative service.
 * Demonstrate calling a Knative gRPC service from a non-Knative service: [ping web page](svc-mfe2grpc.md).
 
+## Keeping Knative service private
+
+Having Knative services accessible from the public internet is not, generally speaking, a good idea. It has been 
+convenient for us to have the services accessible from the public internet while we have been developing and testing
+them. This has allowed us to use a browser or `curl` command line to verify that the services are working as expected.
+But now we want to remove that public access:
+
+* [Removing public access to Knative services](private.md)
+

@@ -99,3 +99,9 @@ kubectl delete -f kn-service.yaml`
 ```
 
 Then rebuild and deploy again following the instructions at the top, above.
+
+## Next ...
+
+Its been useful to demonstrate access to our GraphQL and gRPC services from a browser and `curl` commands, but 
+we probably should not have such services be accessible from the public internet. The next step is to revert the 
+configuration that made this possible: [Removing public access to Knative services](private.md).

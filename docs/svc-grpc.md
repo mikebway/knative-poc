@@ -187,5 +187,5 @@ and deploy again following the instructions at the top, above.
 
 Now we want to demonstrate calling the Knative `kn-grpc-ping` service from a non-Knative front-end service
 See [Build and Deploy the `mfe2grpc` Knative Service](svc-mfe2grpc.md).
-```
+
 

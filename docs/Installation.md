@@ -121,17 +121,9 @@ kubectl label namespace kn-poc-services istio-injection=enabled
 kubectl label namespace kn-poc-eventing istio-injection=enabled
 ```
 
-### Configure Knative with knowledge of the cluster gateway
-
-Inform Knative which cluster gateway is being used and how to connect to it:
-
-```shell
-kubectl patch configmap/config-istio -n knative-serving --patch-file patch-config-istio.yaml
-```
-
 ### Tell Knative to skip digest checks for local container registries
 
-This is necessary to prevent Knative from rejecting local container images because they have no manifest and no 
+This is necessary to prevent Knative from rejecting local container images because they have no manifest and no
 digest recorded at [index.docker.io/v2/...](https://index.docker.io/v2), and there are no credentials for that!
 
 Instruct Knative Serving to ignore digests for local container repositories under the `kind.local`, `ko.local`,
@@ -141,6 +133,18 @@ and `dev.local` domains:
 kubectl patch configmap/config-deployment -n knative-serving --patch-file patch-config-deployment.yaml
 ```
 
+### Configure Knative with knowledge of the cluster gateway
+
+Inform Knative which cluster gateway is being used and how to connect to it:
+
+```shell
+kubectl patch configmap/config-istio -n knative-serving --patch-file patch-config-istio.yaml
+```
+
+**IMPORTANT:** You probably would not want to do anything like this on a production cluster. Together with the
+`config-domain` ConfigMap patch below, this makes all of your Knative service publicly accessible! That's useful
+for our purposes here, but not a good idea in general.
+
 ### Configure webhook domain(s)
 
 Inform Knative which domain name suffixes to use for services that are to be exposed outside the cluster:
@@ -148,6 +152,10 @@ Inform Knative which domain name suffixes to use for services that are to be exp
 ```shell
 kubectl patch configmap/config-domain -n knative-serving --patch-file patch-config-domain.yaml
 ```
+
+**IMPORTANT:** You probably would not want to do anything like this on a production cluster. Together with the 
+`config-istio` ConfigMap patch above, this makes all of your Knative service publicly accessible! That's useful
+for our purposes here, but not a good idea in general.
 
 ### Record the cluster gateway IP address
 
