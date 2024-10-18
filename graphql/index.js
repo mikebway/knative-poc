@@ -51,6 +51,9 @@ const pingProto = grpc.loadPackageDefinition(pingProtoDef).ping;
 const GRPC_SERVICE = process.env.GRPC_SERVICE || 'localhost';
 const GRPC_PORT = process.env.GRPC_PORT || 50051;
 
+// The authorization header name
+const AUTH_HEADER_NAME = 'x-extauth-authorization';
+
 // Create the Ping service client
 grpcServiceLocation = `${GRPC_SERVICE}:${GRPC_PORT}`
 console.log('locating gRPC service at: ' + grpcServiceLocation)
@@ -78,9 +81,18 @@ const resolvers = {
         },
 
         // Ping service resolver
-        ping: (_, { message }) => {
+        ping: (_, { message }, { req }) => {
             return new Promise((resolve, reject) => {
-                pingClient.ping({ msg: message }, (error, response) => {
+
+                // Copy the authorization header to the gRPC metadata
+                const metadata = new grpc.Metadata();
+                const authHeader = req.headers[AUTH_HEADER_NAME];
+                if (authHeader) {
+                    metadata.add(AUTH_HEADER_NAME, authHeader);
+                }
+
+                // Invoke the Ping service
+                pingClient.ping({ msg: message }, metadata, (error, response) => {
                     if (error) {
                         reject(error);
                     } else {
@@ -100,11 +112,11 @@ const server = new ApolloServer({
     cache: 'bounded',
     context: ({ req }) => {
         // get the user token from the headers
-        const token = req.headers['x-extauth-authorization'] || '';
+        const token = req.headers[AUTH_HEADER_NAME] || '';
 
         // There must be an authorization token
         if (!token) {
-            throw new GraphQLError('x-extauth-authorization header is missing', {
+            throw new GraphQLError(AUTH_HEADER_NAME + ' header is missing', {
                 extensions: {
                     code: 'UNAUTHENTICATED',
                     http: { status: 401 },
@@ -115,7 +127,7 @@ const server = new ApolloServer({
         try {
             // Unpack the JWT bearer token and extract the subject
             const decoded = jwt.decode(token.replace('Bearer ', ''));
-            return { user: decoded.sub };
+            return { user: decoded.sub, req: req };
 
         } catch (err) {
             throw new GraphQLError('Invalid authorization token', {

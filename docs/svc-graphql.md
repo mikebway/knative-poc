@@ -195,6 +195,12 @@ curl -X POST http://localhost/graphql \
   -d '{"query": "query { getJwtSubject }"}'
 ```
 
+## Making code changes
+
+If you modify the source code and need to redeploy them without getting into the hassle of Kubernetes and Knative
+versioning, first undeploy the service using `make undeploy` or `kubectl delete -f kn-service.yaml`. The rebuild and
+and deploy again following the instructions at the top, above.
+
 ## Next ...
 
 Now we want to add a simple gRPC service that the GraphQL service can call. See [Build and Deploy the `kn-grpc-ping` Knative Service](svc-grpc.md).

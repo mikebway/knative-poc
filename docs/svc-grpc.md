@@ -139,7 +139,7 @@ your `/etc/hosts` file with the following line because **gRPCurl** does not supp
 127.0.0.1       grpc-ping.kn-poc-services.kn.com
 ```
 
-Now you can try to hit the `Ping` method with the following command:
+Now you can try to hit the `Ping` method with the following command from the [`grpc-ping`](../grpc-ping) directory:
 
 ```shell
 grpcurl -import-path api/v1 -proto ping.proto \
@@ -154,8 +154,19 @@ You should get a response that looks like this:
 
 ```json
 {
-  "msg": "Pinging you - pong"
+  "msg": "Pinging you again - pong (subject: Salvador-Dali)"
 }
+```
+
+The GraphQL service has a query method that invokes the `kn-grpc-ping` service. You can test this with the following 
+`curl` command:
+
+```shell
+curl -X POST http://localhost/graphql \
+  -H "Host: graphql.kn-poc-services.kn.com" \
+  -H "Cookie: session=Mickey Mouse" \
+  -H "Content-Type: application/json" \
+  -d '{"query":"{ ping(message: \"Pinging you\") }"}'
 ```
 
 ### Whats with the `-import-path api/v1 -proto ping.proto` stuff?
@@ -166,3 +177,8 @@ service does not support reflection.
 
 The `-import-path` and `-proto` flags allow **gRPCurl** to load the service definition from the source `ping.proto` file.
 
+## Making code changes
+
+If you modify the source code and need to redeploy them without getting into the hassle of Kubernetes and Knative
+versioning, first undeploy the service using `make undeploy` or `kubectl delete -f kn-service.yaml`. The rebuild and
+and deploy again following the instructions at the top, above.

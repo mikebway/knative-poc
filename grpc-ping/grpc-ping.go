@@ -6,26 +6,40 @@ import (
 	"log"
 	"net"
 	"os"
+	"strings"
 	"time"
 
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/reflection"
 
+	jwt "github.com/golang-jwt/jwt/v5"
 	"github.com/mikebway/knative-poc/grpc-ping/ping"
 )
 
-const DEFAULT_PORT = "8080"
+const (
+	DEFAULT_PORT     = "8080"
+	AUTH_HEADER_NAME = "x-extauth-authorization"
+)
 
 type pingServer struct {
 	ping.UnimplementedPingServiceServer
 }
 
 func (p *pingServer) Ping(ctx context.Context, req *ping.Request) (*ping.Response, error) {
-	return &ping.Response{Msg: fmt.Sprintf("%s - pong", req.Msg)}, nil
+	subject, err := authorize(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return &ping.Response{Msg: fmt.Sprintf("%s - pong (subject: %s)", req.Msg, subject)}, nil
 }
 
 func (p *pingServer) PingStream(stream ping.PingService_PingStreamServer) error {
+	subject, err := authorize(stream.Context())
+	if err != nil {
+		return err
+	}
 	for {
 		req, err := stream.Recv()
 
@@ -42,13 +56,43 @@ func (p *pingServer) PingStream(stream ping.PingService_PingStreamServer) error 
 		fmt.Printf("Replying to ping %s at %s\n", req.Msg, time.Now())
 
 		err = stream.Send(&ping.Response{
-			Msg: fmt.Sprintf("pong %s", time.Now()),
+			Msg: fmt.Sprintf("%s - pong (subject: %s)", req.Msg, subject),
 		})
 
 		if err != nil {
 			fmt.Printf("Failed to send pong %s\n", err)
 			return err
 		}
+	}
+}
+
+func authorize(ctx context.Context) (string, error) {
+	md, ok := metadata.FromIncomingContext(ctx)
+	if !ok {
+		return "", fmt.Errorf("missing metadata")
+	}
+
+	authHeader, ok := md[AUTH_HEADER_NAME]
+	if !ok || len(authHeader) == 0 {
+		return "", fmt.Errorf("missing authorization header")
+	}
+
+	// WARNING: Do not not use jwt.ParseUnverified() in production code!!!
+	tokenString := strings.TrimPrefix(authHeader[0], "Bearer ")
+	token, _, err := new(jwt.Parser).ParseUnverified(tokenString, jwt.MapClaims{})
+	if err != nil {
+		return "", fmt.Errorf("invalid token: %v", err)
+	}
+
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if ok {
+		subject := claims["sub"].(string)
+		if subject == "" {
+			subject = "jwt subject not defined"
+		}
+		return subject, nil
+	} else {
+		return "", fmt.Errorf("invalid token claims")
 	}
 }
 
