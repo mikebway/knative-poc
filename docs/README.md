@@ -12,7 +12,7 @@ Follow the instructions here: [Install Knative on Minikube locally](Installation
 a few seconds. If any step fails with some difficult to explain error, wait a few beats (even quite a lot of beats) and
 try again.
 
-### Reminders & dashboards
+## Reminders & dashboards
 
 * Don't forget to start the TCP tunnel that connects localhost port 80 to the cluster:
   ```shell
@@ -45,5 +45,7 @@ try again.
 ## Doing some Knative Serving
 
 * Deploy and run a GraphQL service using Knative Serving: [GraphQL service](svc-graphql.md).
-* Deploy and run a gRPC service using Knative Serving: [gRPC service](svc-grpc.md).
+* Deploy and run a gRPC service using Knative Serving from the Knative GraphQL service: [gRPC service](svc-grpc.md); 
+  i.e. a Knative service calling Knative service.
+* Demonstrate calling a Knative gRPC service from a non-Knative service: [ping web page](svc-mfe2grpc.md).
 

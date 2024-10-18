@@ -11,7 +11,7 @@ outlined in [Install Knative on Minikube locally](Installation.md) with Minikube
 
 ## Build and manage with `make`
 
-**IMPORTANT:** The following assumes that your current working directory is the [`knative-poc/graphql`](../kn-graphql)
+**IMPORTANT:** The following assumes that your current working directory is the [`knative-poc/graphql`](../graphql)
 directory.
 
 The easiest way to build, start and manage the `kn-graphql` Knative service is using `make`. Running `make` without any

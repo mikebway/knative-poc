@@ -39,7 +39,7 @@ change the protocol buffer definition in the `proto/ping.proto` file, you will t
 
 ## Build and manage the ~~hard~~ expert way
 
-**IMPORTANT:** The following assumes that your current working directory is the [`knative-poc/graphql`](../kn-grpc-ping)
+**IMPORTANT:** The following assumes that your current working directory is the [`knative-poc/grpc-ping`](../grpc-ping)
 directory.
 
 In a terminal shell, run the following:
@@ -182,3 +182,10 @@ The `-import-path` and `-proto` flags allow **gRPCurl** to load the service defi
 If you modify the source code and need to redeploy them without getting into the hassle of Kubernetes and Knative
 versioning, first undeploy the service using `make undeploy` or `kubectl delete -f kn-service.yaml`. The rebuild and
 and deploy again following the instructions at the top, above.
+
+## Next ...
+
+Now we want to demonstrate calling the Knative `kn-grpc-ping` service from a non-Knative front-end service
+See [Build and Deploy the `mfe2grpc` Knative Service](svc-mfe2grpc.md).
+```
+

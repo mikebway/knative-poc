@@ -27,7 +27,7 @@ stop: ## Stop the service
 	kubectl scale --replicas=0 -f deployment.yaml
 
 .PHONY: run
-run: ## Run the service locally assuming that the gRPC Ping services is at port 50051
+run: ## Run the service locally assuming that the gRPC Ping service is at port 50051
 	GRPC_SERVICE=localhost GRPC_PORT=50051 go run .
 
 
