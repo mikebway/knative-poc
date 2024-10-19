@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
@@ -88,7 +89,7 @@ func initPingClient() error {
 	grpcService := os.Getenv("GRPC_SERVICE")
 	grpcPort := os.Getenv("GRPC_PORT")
 	if grpcService == "" || grpcPort == "" {
-		log.Fatalf("GRPC_SERVICE and GRPC_PORT must be set")
+		return errors.New("GRPC_SERVICE and GRPC_PORT must be set")
 	}
 
 	// Define the connection and create the client

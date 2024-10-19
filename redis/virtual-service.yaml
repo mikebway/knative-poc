@@ -1,0 +1,38 @@
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: vs-authtest
+  namespace: authtest
+spec:
+  hosts:
+    - '*'
+  gateways:
+    - istio-system/authtest-gateway
+  http:
+    - name: "data"
+      match:
+        - uri:
+            prefix: "/data"
+      route:
+        - destination:
+            host: redis-ux
+    - name: "ping"
+      match:
+        - uri:
+            prefix: "/ping"
+      route:
+        - destination:
+            host: mfe2grpc
+    - name: "authentication"
+      match:
+        - uri:
+            exact: "/login"
+        - uri:
+            exact: "/logout"
+      route:
+        - destination:
+            host: login
+    - route:
+        - destination:
+            host: authtest

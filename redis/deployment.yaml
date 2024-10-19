@@ -1,23 +1,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mfe2grpc
+  name: redis-ux
   namespace: authtest
   labels:
-    app: mfe2grpc
+    app: redis-ux
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: mfe2grpc
+      app: redis-ux
   template:
     metadata:
       labels:
-        app: mfe2grpc
+        app: redis-ux
     spec:
       containers:
-        - name: mfe2grpc
-          image: mfe2grpc:v1
+        - name: redis-ux
+          image: redis-ux:v1
           imagePullPolicy: Never
           ports:
             - containerPort: 8080
@@ -29,7 +29,9 @@ spec:
               memory: "128Mi"
               cpu: "0.2"
           env:
-            - name: "GRPC_SERVICE"
-              value: "grpc-ping.kn-poc-services.svc.cluster.local"
-            - name: GRPC_PORT
-              value: "80"
+            - name: "REDIS_SERVICE"
+              value: "redis-service.default.svc.cluster.local"
+            - name: REDIS_PORT
+              value: "6379"
+            - name: REDIS_PASSWORD
+              value: "redis-password"
