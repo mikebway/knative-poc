@@ -14,14 +14,15 @@ import (
 const (
 	DEFAULT_PORT     = "8080"
 	AUTH_HEADER_NAME = "x-extauth-authorization"
+
+	// Redis data keys
+	lastPathKey  = "lastPath"
+	pingCountKey = "pingCount"
 )
 
 var (
 	// Access to the Redis database
 	redisClient *redis.Client
-
-	// Redis data keys
-	lastPathKey = "lastPath"
 )
 
 // main is the command line entry point to the application.
@@ -82,10 +83,20 @@ func handleRoot(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// How many ping events have we seen
+	pingCount, err := redisClient.Get(ctx, pingCountKey).Result()
+	if err != nil && err != redis.Nil {
+		msg := fmt.Sprintf("redis get for pingCount failed: %v", err)
+		log.Println(msg)
+		http.Error(w, msg, http.StatusInternalServerError)
+		return
+	}
+
 	// Dump some text onto the response
 	_, _ = fmt.Fprintf(w, "Host:\t\t%s\n", r.Host)
 	_, _ = fmt.Fprintf(w, "Path:\t\t%s\n", r.URL.Path)
 	_, _ = fmt.Fprintf(w, "Last path:\t%s\n", lastPath)
+	_, _ = fmt.Fprintf(w, "Ping count:\t%s\n", pingCount)
 }
 
 // initRedisClient a connection to the Redis database service.

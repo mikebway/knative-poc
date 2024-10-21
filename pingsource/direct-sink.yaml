@@ -1,0 +1,15 @@
+apiVersion: sources.knative.dev/v1
+kind: PingSource
+metadata:
+  name: ping-every-minute
+  namespace: kn-poc-eventing
+spec:
+  schedule: "*/1 * * * *"
+  contentType: application/text
+  data: '1 minute ping data'
+  sink:
+    ref:
+      apiVersion: serving.knative.dev/v1
+      kind: service
+      namespace: kn-poc-eventing
+      name: ke-pingcount

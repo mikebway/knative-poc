@@ -29,7 +29,7 @@ func receive(event cloudevents.Event) {
 
 	// Increment the count of events seen in Redis
 	ctx := context.Background()
-	err := redisClient.Incr(ctx, "event_count").Err()
+	err := redisClient.Incr(ctx, pingCountKey).Err()
 	if err != nil {
 		log.Printf("failed to increment event count: %v\n", err)
 	}
