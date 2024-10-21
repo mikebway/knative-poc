@@ -61,7 +61,7 @@ kubectl apply -f kn-service.yaml
 
 Assumming that you have the `minikube tunnel` running, you should be able to hit the following URL in your browser:
 
-* http://<your-system-name>.local/ping
+* http://\<your-system-name\>.local/ping
 
 Or use `curl`:
 
