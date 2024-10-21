@@ -139,14 +139,14 @@ The Istio ingress gateway and Knative Serving are now cooperating to route reque
 URLs to the `kn-graphql` service. But how can you get a browser to send a request to a URL with that domain name to 
 the Minikube cluster running on your laptop? 
 
-To reach Minikube, you need to target a URL in the form `http://<your-system-name>.local`, but that will just go to the 
+To reach Minikube, you need to target a URL in the form `http://\<your-system-name\>.local`, but that will just go to the 
 `authtest` services. To reach the `kn-graphql` service, you need to override the `Host` header of your requests so that  
 the Istio ingress gateway recognizes the request as being for the `kn-graphql` service. That's where the ModHeader 
 Chrome extension comes in.
 
 See [ModHeader Chrome Extension](modheader.md) for instructions on how to override the `Host` header in some or all of 
 your browser requests. Suggestion: configure **ModHeader** to only set the `Host` header to `graphql.kn-poc-services.kn.com`
-when the URL matches `.*://<your-system-name>.local/graphql`; that way, you can still reach the `authtest` service with
+when the URL matches `.*://\<your-system-name\>.local/graphql`; that way, you can still reach the `authtest` service with
 other URL patterns from any of your browser tabs.
 
 Withe the `Host` header set to `graphql.kn-poc-services.kn.com`, you will be able to reach the Graphiql user interface

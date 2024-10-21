@@ -41,6 +41,7 @@ try again.
   ```shell
   istioctl dashboard kiali
   ```
+* Install and use the `stern` tool to monitor the logs of all services in one terminal shell: see [Using `stern`](stern.md).
 
 ## Doing some Knative Serving
 

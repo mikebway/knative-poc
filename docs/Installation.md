@@ -48,6 +48,12 @@ different process. For example, see [Installing Knative serving on Google Cloud]
   ```shell
   brew install grpcurl
   ```
+* [stern](https://kubernetes.io/blog/2016/10/tail-kubernetes-with-stern/) for tailing logs from multiple pods.
+  ```shell
+  brew install stern
+  ```
+  See [Using `stern`](stern.md) for more information on how to use this tool to monitor all our services in one
+  terminal shell.
   
 * The [ModHeader](https://modheader.com/modheader)  Chrome browser extension. This will allow you to set the `Host` 
   header on your browser requests to something other than `localhost` in order to have Knative Serving recognize the 

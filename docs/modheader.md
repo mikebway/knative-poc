@@ -44,7 +44,7 @@ that match the pattern you specify. For example:
 ![ModHeader URL filter](modheader-url-filter.png)
 
 If you replace the `mbroadway-macbookpro.local` text in the above screenshot with your Mac's host name, then all
-requests to `http://<your-system-name>.local/graphql` will have the `Host` header set to 
+requests to `http://\<your-system-name\>.local/graphql` will have the `Host` header set to 
 `graphql.kn-poc-services.kn.com` regardless of which browser tab to are on. Meanwhile, requests to other
-`http://<your-system-name>.local` URLs will route to the `authtest` application services.
+`http://\<your-system-name\>.local` URLs will route to the `authtest` application services.
 
