@@ -1,0 +1,17 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: ke-pingcount
+  namespace: kn-poc-eventing
+spec:
+  template:
+    spec:
+      containers:
+        - image: dev.local/ke-pingcount:v1
+          env:
+            - name: "REDIS_SERVICE"
+              value: "redis-service.default.svc.cluster.local"
+            - name: REDIS_PORT
+              value: "6379"
+            - name: REDIS_PASSWORD
+              value: "redis-password"

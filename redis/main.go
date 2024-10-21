@@ -54,8 +54,16 @@ func handleRoot(w http.ResponseWriter, r *http.Request) {
 	// Log the URL that we have been asked for etc
 	log.Printf("handling request = %s\n", r.URL.Path)
 
-	// As a crude confirmation that we are handling requests and connecting to Redis,
-	// retrieve the last URL path that we processed from the Redis database
+	// Check authorization - a user must be logged in to access this service
+	// Extract the authorization header
+	authHeader := r.Header.Get(AUTH_HEADER_NAME)
+	if authHeader == "" {
+		http.Error(w, "must be logged in to access this page", http.StatusUnauthorized)
+		return
+	}
+
+	// As a crude confirmation that we have installed Redis correctly, retrieve the last URL path
+	// that we processed from the Redis database
 	ctx := context.Background()
 	lastPath, err := redisClient.Get(ctx, lastPathKey).Result()
 	if err != nil && err != redis.Nil {

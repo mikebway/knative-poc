@@ -59,3 +59,11 @@ But now we want to remove that public access:
 
 * [Removing public access to Knative services](private.md)
 
+## Starting with Knative Eventing
+
+* Deploy a CloudEvent consumer: [Ping Event Counter](svc-pingcount.md) to maintain a count of `cron` ping events.
+* Deploy a CloudEvent source: [Ping Event Source](ping-source.md) to generate `cron` ping events.
+
+## Brokering events
+
+* Separate event sources from consumers with a broker: [Event Broker](event-broker.md).
