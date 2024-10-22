@@ -6,6 +6,9 @@ request and trigger a matching on-demand service.
 
 ModHeader is free to use.
 
+**NOTE:** If you use either Safari or Firefox, you will not need to use anything like ModHeader as both of these
+browsers pay attention to host names defined in the `/etc/hosts` file.
+
 ## Install ModHeader
 
 The **Install ModHeader** button on the [ModHeader](https://modheader.com/modheader) marketing web page will take 

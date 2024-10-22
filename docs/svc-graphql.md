@@ -140,16 +140,19 @@ URLs to the `kn-graphql` service. But how can you get a browser to send a reques
 the Minikube cluster running on your laptop? 
 
 To reach Minikube, you need to target a URL in the form `http://\<your-system-name\>.local`, but that will just go to the 
-`authtest` services. To reach the `kn-graphql` service, you need to override the `Host` header of your requests so that  
-the Istio ingress gateway recognizes the request as being for the `kn-graphql` service. That's where the ModHeader 
-Chrome extension comes in.
+`authtest` services. To reach the `kn-graphql` service, you either need to override the `Host` header of your requests 
+or have an `graphql.kn-poc-services.kn.com` entry for the `127.0.0.1` address in your `etc/hosts` file so that  
+the Istio ingress gateway recognizes the request as being for the `kn-graphql` service. 
 
-See [ModHeader Chrome Extension](modheader.md) for instructions on how to override the `Host` header in some or all of 
-your browser requests. Suggestion: configure **ModHeader** to only set the `Host` header to `graphql.kn-poc-services.kn.com`
+If you are using either the Safari or Firefox browser, add `graphql.kn-poc-services.kn.com` to your hosts file. If you
+insist on using Chromw, you will need to override the `Host` header of your requests with the ModHeader Chrome extension.
+See [ModHeader Chrome Extension](modheader.md) for instructions.
+
+Suggestion: If you do have to use **ModHeader**, configure it to only set the `Host` header to `graphql.kn-poc-services.kn.com`
 when the URL matches `.*://\<your-system-name\>.local/graphql`; that way, you can still reach the `authtest` service with
 other URL patterns from any of your browser tabs.
 
-Withe the `Host` header set to `graphql.kn-poc-services.kn.com`, you will be able to reach the Graphiql user interface
+With  `graphql.kn-poc-services.kn.com` as the target host, you will be able to reach the Graphiql user interface
 and see something like this:
 
 ![Unauthenticated Graphiql](graphiql-not-authorized.png)

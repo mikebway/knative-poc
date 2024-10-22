@@ -58,6 +58,9 @@ different process. For example, see [Installing Knative serving on Google Cloud]
 * The [ModHeader](https://modheader.com/modheader)  Chrome browser extension. This will allow you to set the `Host` 
   header on your browser requests to something other than `localhost` in order to have Knative Serving recognize the 
   request and trigger a matching on-demand service.
+  
+  **NOTE:** If you use either Safari or Firefox, you will not need to use anything like ModHeader as both of these
+    browsers pay attention to host names defined in the `/etc/hosts` file.
 
 ### Install the Knative CLI
 
