@@ -61,8 +61,9 @@ But now we want to remove that public access:
 
 ## Starting with Knative Eventing
 
-* Deploy a CloudEvent consumer: [Ping Event Counter](svc-pingcount.md) to maintain a count of `cron` ping events.
-* Deploy a CloudEvent source: [Ping Event Source](ping-source.md) to generate `cron` ping events.
+* Deploy a CloudEvent consumer: [Ping Event Counter](svc-pingcount.md) to maintain a count of `cron` ping events in Redis.
+* Deploy a CloudEvent source: [Ping Event Source](svc-pingsource.md) to generate `cron` ping events.
+* Deploy a Web page service to display the ping count: [Redis Display](svc-redis.md).
 
 ## Brokering events
 
