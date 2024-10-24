@@ -13,7 +13,9 @@ spec:
     - name: "ping"
       match:
         - uri:
-            prefix: "/ping"
+            exact: "/ping"
+        - uri:
+            prefix: "/ping/"
       route:
         - destination:
             host: mfe2grpc

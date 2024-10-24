@@ -13,14 +13,18 @@ spec:
     - name: "data"
       match:
         - uri:
-            prefix: "/data"
+            exact: "/data"
+        - uri:
+            prefix: "/data/"
       route:
         - destination:
             host: redis-ux
     - name: "ping"
       match:
         - uri:
-            prefix: "/ping"
+            exact: "/ping"
+        - uri:
+            prefix: "/ping/"
       route:
         - destination:
             host: mfe2grpc
