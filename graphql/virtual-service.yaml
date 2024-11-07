@@ -10,15 +10,6 @@ spec:
   gateways:
     - istio-system/authtest-gateway
   http:
-    - name: "ping"
-      match:
-        - uri:
-            exact: "/ping"
-        - uri:
-            prefix: "/ping/"
-      route:
-        - destination:
-            host: mfe2grpc
     - name: "graphql"
       match:
         - uri:

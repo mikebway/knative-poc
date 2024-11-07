@@ -33,6 +33,9 @@ make build
 
 # Deploy and start the container as a service
 makde deploy
+
+# Update the Istio ingress gateway to add the /graphql path to the authtest application
+kubectl apply -f virtual-service.yaml
 ```
 
 ## Build and manage the ~~hard~~ expert way 
@@ -55,10 +58,16 @@ docker build -t dev.local/kn-graphql:v1 .
 
 # Create the Knative service  
 kubectl apply -f kn-service.yaml
+
+# Update the Istio ingress gateway to add the /graphql path to the authtest application
+kubectl apply -f virtual-service.yaml
 ```
 
-**IMPORTANT:** The `dev.local/` prefix of the `kn-graphql` image tag is required for Knative Serving to recognize
-that the container image is to be found in the local Minikube registry and not in the default `docker.io` registry.
+## The `dev.local` image prefix
+
+The `dev.local/` prefix of the `kn-graphql` image tag in the [`Dockerfile`](../graphql/Dockerfile) is required for 
+Knative Serving to recognize that the container image is to be found in the local Minikube registry and not in the 
+default `docker.io` registry.
 
 Deploying containers to Minikube outside of Knative Serving does not require this prefix; Minikube naturally assumes
 that an unadorned image reference is for the Minikube registry if that addon has been installed. Knative does not
@@ -75,8 +84,8 @@ kn service list -n kn-poc-services
 You should see something like this:
 
 ```text
-NAME      URL                                     LATEST          AGE     CONDITIONS   READY   REASON
-graphql   http://graphql.kn-poc-services.kn.com   graphql-00001   8m57s   3 OK / 3     True
+NAME      URL                                          LATEST          AGE     CONDITIONS   READY   REASON
+graphql   http://graphql.kn-poc-services.kn.internal   graphql-00001   8m57s   3 OK / 3     True
 ```
 
 If you see something like this instead, see **Troubleshooting** below.
@@ -135,30 +144,24 @@ kubectl logs -n knative-serving controller-67c77bd44d-mr8gl -f
 
 ## Testing
 
-The Istio ingress gateway and Knative Serving are now cooperating to route requests for `graphql.kn-poc-services.kn.com` 
+The Istio ingress gateway and Knative Serving are now cooperating to route requests for `graphql.kn-poc-services.kn.internal` 
 URLs to the `kn-graphql` service. But how can you get a browser to send a request to a URL with that domain name to 
 the Minikube cluster running on your laptop? 
 
-To reach Minikube, you need to target a URL in the form `http://\<your-system-name\>.local`, but that will just go to the 
-`authtest` services. To reach the `kn-graphql` service, you either need to override the `Host` header of your requests 
-or have an `graphql.kn-poc-services.kn.com` entry for the `127.0.0.1` address in your `etc/hosts` file so that  
-the Istio ingress gateway recognizes the request as being for the `kn-graphql` service. 
+If you are using either the Safari or Firefox browser, add `graphql.kn-poc-services.kn.com` to your hosts file for the
+address `127.0.0.1`. Then you will be able to reach the Graphiql user interface at `http://graphql.kn-poc-services.kn.com`.
 
-If you are using either the Safari or Firefox browser, add `graphql.kn-poc-services.kn.com` to your hosts file. If you
-insist on using Chromw, you will need to override the `Host` header of your requests with the ModHeader Chrome extension.
+If you insist on using Chrome, you will need to override the `Host` header of your requests with the ModHeader Chrome extension.
 See [ModHeader Chrome Extension](modheader.md) for instructions.
 
-Suggestion: If you do have to use **ModHeader**, configure it to only set the `Host` header to `graphql.kn-poc-services.kn.com`
-when the URL matches `.*://\<your-system-name\>.local/graphql`; that way, you can still reach the `authtest` service with
-other URL patterns from any of your browser tabs.
-
-With  `graphql.kn-poc-services.kn.com` as the target host, you will be able to reach the Graphiql user interface
-and see something like this:
+Suggestion: If you do have to use Chrome **ModHeader** extension, configure it to only set the `Host` header to `graphql.kn-poc-services.kn.com`
+when the URL matches `.*://\<your-system-name\>.local/graphql`; that way, you can still reach the `authtest` service 
+with all the other URL patterns.
 
 ![Unauthenticated Graphiql](graphiql-not-authorized.png)
 
-You will not be able to submit a query without getting an authorization error, but at least you know that the Kubernetes
-ingress gateway routed your request correctly. Authorization is the next step.
+You will not be able to submit a query without getting an authorization error and "Schema Introspection Failure", but 
+at least you know that the Kubernetes ingress gateway routed your request correctly. Authorization is the next step.
 
 Don't worry if you see a "Schema Introspection Failure" and "Unable to reach server" projected on top of the Graphiql 
 display, that's just because you have not provided authorization credentials. If you can see a Graphiql sandbox 
@@ -170,7 +173,7 @@ Using `curl`, you can test the service without the need for the ModHeader Chrome
 Run the following:
 
 ```shell
-curl -X POST http://localhost/graphql \
+curl -X POST http://example.com/graphql \
   -H "Host: graphql.kn-poc-services.kn.com" \
   -H "Cookie: session=Mickey Mouse" \
   -H "Content-Type: application/json" \
@@ -207,5 +210,5 @@ and deploy again following the instructions at the top, above.
 ## Next ...
 
 Now we want to add a simple gRPC service that the GraphQL service can call. See [Build and Deploy the `kn-grpc-ping` Knative Service](svc-grpc.md).
-```
+
 

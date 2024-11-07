@@ -55,13 +55,6 @@ different process. For example, see [Installing Knative serving on Google Cloud]
   See [Using `stern`](stern.md) for more information on how to use this tool to monitor all our services in one
   terminal shell.
   
-* The [ModHeader](https://modheader.com/modheader)  Chrome browser extension. This will allow you to set the `Host` 
-  header on your browser requests to something other than `localhost` in order to have Knative Serving recognize the 
-  request and trigger a matching on-demand service.
-  
-  **NOTE:** If you use either Safari or Firefox, you will not need to use anything like ModHeader as both of these
-    browsers pay attention to host names defined in the `/etc/hosts` file.
-
 ### Install the Knative CLI
 
 See the [Installing the Knative CLI documentation](https://knative.dev/docs/client/install-kn/) for alternative
@@ -97,7 +90,7 @@ NAME               READY   UP-TO-DATE   AVAILABLE   AGE
 knative-operator   1/1     1            1           2m22s
 operator-webhook   1/1     1            1           2m22s
 ```
-Should you wish to revert to naked Minikube, sans Knative Serving, exectute the following after reverting all later
+Should you wish to revert to naked Minikube, sans Knative Serving, execute the following after reverting all later
 steps:
 
 ```shell
@@ -150,10 +143,6 @@ Inform Knative which cluster gateway is being used and how to connect to it:
 kubectl patch configmap/config-istio -n knative-serving --patch-file patch-config-istio.yaml
 ```
 
-**IMPORTANT:** You probably would not want to do anything like this on a production cluster. Together with the
-`config-domain` ConfigMap patch below, this makes all of your Knative service publicly accessible! That's useful
-for our purposes here, but not a good idea in general.
-
 ### Configure webhook domain(s)
 
 Inform Knative which domain name suffixes to use for services that are to be exposed outside the cluster:
@@ -162,9 +151,17 @@ Inform Knative which domain name suffixes to use for services that are to be exp
 kubectl patch configmap/config-domain -n knative-serving --patch-file patch-config-domain.yaml
 ```
 
-**IMPORTANT:** You probably would not want to do anything like this on a production cluster. Together with the 
-`config-istio` ConfigMap patch above, this makes all of your Knative service publicly accessible! That's useful
-for our purposes here, but not a good idea in general.
+**IMPORTANT:** Together with the `config-istio` ConfigMap patch above, this makes all of your Knative service accessible
+accessible from outside your cluster to requests that have `Host` headers in the form `\<service-name\>.\<namespace\>.kn.internal`.
+External accessibility like this is a requirement if you wish to route any URL paths to Knative managed services via 
+Istio. 
+
+An alternative to having the Istio ingress gateway route requests to Knative services would be to have the Istio ingress
+gateway route requests to paths to be handled by Knative services to a reverse proxy service (e.g. Envoy, Nginx) deployed
+inside the cluster. This second stage ingress would then route to the various `\<service-name\>.\<namespace\>.svc.cluster.local`
+services managed by Knative. This might be a more secure approach, but it would also be more complex to set up.
+
+To revert to internal only access to Knative services, see [Removing external access to Knative services](private.md).
 
 ### Record the cluster gateway IP address
 

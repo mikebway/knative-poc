@@ -3,7 +3,8 @@
 This service listens for `cron` ping CloudEvents and maintains a count of the number of events received. The count is 
 stored in Redis under the `pingCount` key.
 
-Events are sourced from the Knative sample [Ping Event Source](ping-source.md).
+Events are sourced from the Knative sample [Ping Event Source](svc-pingsource.md), that will be installed next, after 
+this event consumer.
 
 # Build and manage with `make`
 
@@ -64,6 +65,13 @@ kn service list -n kn-poc-eventing
 You should see something like this:
 
 ```text
+NAME           URL                                               LATEST               AGE   CONDITIONS   READY   REASON
+ke-pingcount   http://ke-pingcount.kn-poc-eventing.kn.internal   ke-pingcount-00001   8s    3 OK / 3     True
+```
+
+If you have chosen to keep Knative services private to the cluster, you will see something like this instead:
+
+```text
 NAME           URL                                                     LATEST               AGE   CONDITIONS   READY   REASON
 ke-pingcount   http://ke-pingcount.kn-poc-eventing.svc.cluster.local   ke-pingcount-00001   8s    3 OK / 3     True
 ```
@@ -89,3 +97,7 @@ section for the [kn-grpc-ping](svc-grpc.md) service. Just be sure to substitute 
 NAME                 CONFIG NAME    GENERATION   READY   REASON   ACTUAL REPLICAS   DESIRED REPLICAS
 ke-pingcount-00001   ke-pingcount   1            False   ContainerMissing
 ```
+
+## Next ...
+
+Now we need to configure the event source for this service to count. See [Ping Event Source](svc-pingsource.md).

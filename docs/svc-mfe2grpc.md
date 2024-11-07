@@ -61,25 +61,21 @@ kubectl apply -f virtual-service.yaml
 
 ## Confirm that the service is running ok
 
-Assumming that you have the `minikube tunnel` running, you should be able to hit the following URL in your browser:
+Assumming that you have the `minikube tunnel` running, you should be able to hit http://example.com/ping in your browser.
+Unless, that is, you insist on using Chrome, in which case you will need to go to `http://\<your-system-name\>.local/ping`.
 
-* http://\<your-system-name\>.local/ping
-
-Or use `curl`:
+But you can always use `curl` if you have added example.com to your `hosts` file:
 
 ```shell
-curl -X GET http://localhost/ping \
-  -H "Host: knative-demo.local" \
-  -H "Cookie: session=Mickey Mouse" \
-  -H "Content-Type: application/json" 
+curl -X GET http://example.com/ping -H "Cookie: session=Mickey Mouse"
 ````
 
 You should see something like this in the response:
 
 ```text
-Host:		"knative-demo.local"
+Host:		"example.com"
 Path:		"/ping"
-Count:		1
+Count:		3
 gRPC Ping:	"ping - pong (subject: Mickey Mouse)"
 ```
 
@@ -104,6 +100,5 @@ Then rebuild and deploy again following the instructions at the top, above.
 
 ## Next ...
 
-Its been useful to demonstrate access to our GraphQL and gRPC services from a browser and `curl` commands, but 
-we probably should not have such services be accessible from the public internet. The next step is to revert the 
-configuration that made this possible: [Removing public access to Knative services](private.md).
+Next we move on to event driven services and deploying a CloudEvent consumer, [Ping Event Counter](svc-pingcount.md),
+to maintain a count of `cron` ping events in Redis.

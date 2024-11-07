@@ -56,8 +56,11 @@ docker build -t dev.local/kn-grpc-ping:v1 .
 kubectl apply -f kn-service.yaml
 ```
 
-**IMPORTANT:** The `dev.local/` prefix of the `kn-grpc-ping` image tag is required for Knative Serving to recognize
-that the container image is to be found in the local Minikube registry and not in the default `docker.io` registry.
+## The `dev.local` image prefix
+
+The `dev.local/` prefix of the `kn-graphql` image tag in the [`Dockerfile`](../graphql/Dockerfile) is required for
+Knative Serving to recognize that the container image is to be found in the local Minikube registry and not in the
+default `docker.io` registry.
 
 Deploying containers to Minikube outside of Knative Serving does not require this prefix; Minikube naturally assumes
 that an unadorned image reference is for the Minikube registry if that addon has been installed. Knative does not
@@ -132,11 +135,11 @@ kubectl logs -n knative-serving controller-67c77bd44d-mr8gl -f
 
 If you have followed the Knative Service installation steps in sequence up to this point, the `kn-grpc-ping` service 
 should be accessible from outside of the Minikube cluster via the Istio ingress gateway. You should be able to invoke
-the `Ping` method using a `grpccurl` command, but first you will need to add `grpc-ping.kn-poc-services.kn.com` to
-your `/etc/hosts` file with the following line because **gRPCurl** does not support overriding the `Host` header:
+the `Ping` method using a `grpccurl` command, but first you will need to add `grpc-ping.kn-poc-services.kn.internal` to
+your `/etc/hosts` file:
 
 ```text
-127.0.0.1       grpc-ping.kn-poc-services.kn.com
+127.0.0.1       grpc-ping.kn-poc-services.kn.internal
 ```
 
 Now you can try to hit the `Ping` method with the following command from the [`grpc-ping`](../grpc-ping) directory:
@@ -146,7 +149,7 @@ grpcurl -import-path api/v1 -proto ping.proto \
   -plaintext \
   -H 'Cookie: session=Salvador-Dali' \
   -d '{"msg": "Pinging you"}' \
-  grpc-ping.kn-poc-services.kn.com:80 \
+  grpc-ping.kn-poc-services.kn.internal:80 \
   ping.PingService/Ping
 ```
 
@@ -162,8 +165,7 @@ The GraphQL service has a query method that invokes the `kn-grpc-ping` service. 
 `curl` command:
 
 ```shell
-curl -X POST http://localhost/graphql \
-  -H "Host: graphql.kn-poc-services.kn.com" \
+curl -X POST http://example.com/graphql \
   -H "Cookie: session=Mickey Mouse" \
   -H "Content-Type: application/json" \
   -d '{"query":"{ ping(message: \"Pinging you\") }"}'

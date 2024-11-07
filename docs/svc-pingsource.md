@@ -51,5 +51,7 @@ kubectl get events -n kn-poc-eventing
 Do check the age of the event log entry in the left most column to check that it is relevant to the recent actions 
 you have taken.
 
+## Next ...
 
+Finally, we will deploy a [Redis Display](svc-redis.md) service to display the ping count.
 

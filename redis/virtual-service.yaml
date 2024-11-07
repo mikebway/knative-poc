@@ -28,6 +28,23 @@ spec:
       route:
         - destination:
             host: mfe2grpc
+    - name: "graphql"
+      match:
+        - uri:
+            exact: "/graphql"
+        - uri:
+            prefix: "/graphql/"
+      rewrite:
+        # Rewrite the host header to redirect requests to the Knative GraphQL service
+        authority: graphql.kn-poc-services.kn.internal
+        uri: "/"
+      route:
+        # Route the request back around through cluster entry again
+        - destination:
+            host: istio-ingressgateway.istio-system.svc.cluster.local
+            port:
+              number: 80
+          weight: 100
     - name: "authentication"
       match:
         - uri:

@@ -41,6 +41,10 @@ try again.
   ```shell
   istioctl dashboard kiali
   ```
+* You can follow the ingress gateway logs with the following command:
+  ```shell
+  kubectl logs -l app=istio-ingressgateway -n istio-system -f
+  ```
 * Install and use the `stern` tool to monitor the logs of all services in one terminal shell: see [Using `stern`](stern.md).
 
 ## Doing some Knative Serving
@@ -50,15 +54,6 @@ try again.
   i.e. a Knative service calling Knative service.
 * Demonstrate calling a Knative gRPC service from a non-Knative service: [ping web page](svc-mfe2grpc.md).
 
-## Keeping Knative service private
-
-Having Knative services accessible from the public internet is not, generally speaking, a good idea. It has been 
-convenient for us to have the services accessible from the public internet while we have been developing and testing
-them. This has allowed us to use a browser or `curl` command line to verify that the services are working as expected.
-But now we want to remove that public access:
-
-* [Removing public access to Knative services](private.md)
-
 ## Starting with Knative Eventing
 
 * Deploy a CloudEvent consumer: [Ping Event Counter](svc-pingcount.md) to maintain a count of `cron` ping events in Redis.
@@ -67,4 +62,10 @@ But now we want to remove that public access:
 
 ## Brokering events
 
-* Separate event sources from consumers with a broker: [Event Broker](event-broker.md).
+---diff
+- UNDER CONSTRUCTION
+-
+- This section has not yet been written. 
+---
+
+* Mediate between event sources and consumers with a broker: [Event Broker](event-broker.md).

@@ -60,23 +60,19 @@ kubectl apply -f virtual-service.yaml
 
 ## Confirm that the service is running ok
 
-Assumming that you have the `minikube tunnel` running, you should be able to hit the following URL in your browser:
+Assumming that you have the `minikube tunnel` running, you should be able to hit http://example.com/data in your browser.
+Unless, that is, you insist on using Chrome, in which case you will need to go to `http://\<your-system-name\>.local/data`.
 
-* http://\<your-system-name\>.local/data
-
-Or use `curl`:
+But you can always use `curl` if you have added example.com to your `hosts` file:
 
 ```shell
-curl -X GET http://localhost/data \
-  -H "Host: knative-demo.local" \
-  -H "Cookie: session=Mickey Mouse" \
-  -H "Content-Type: application/json" 
+curl -X GET http://example.com/data -H "Cookie: session=Mickey Mouse"
 ````
 
 You should see something like this in the response:
 
 ```text
-Host:		knative-demo.local
+Host:		example.com
 Path:		/data
 Last path:	/data
 Ping count:	3
